@@ -1,0 +1,42 @@
+project:
+  name: self-driving-infra
+  description: "Autonomous Engine Manufacturing"
+  # To work on a local repo, set this path:
+  # repo_path: "."
+  # To clone a remote repo, uncomment and set this URL:
+  repo_url: "git@github.com:gabrielvfonseca/self-driving.git"
+  branch: main
+  test_command: "pytest tests/"
+
+agents:
+  - role: planner
+    provider: gemini
+    model: gemini-2.0-flash-thinking-exp-01-21
+    prompt: agents/prompts/PLANNER.md
+    count: 1
+
+  - role: builder
+    provider: gemini
+    model: gemini-2.0-flash-thinking-exp-01-21
+    prompt: agents/prompts/BUILDER.md
+    count: 3
+
+  - role: reviewer
+    provider: gemini
+    model: gemini-2.0-flash-thinking-exp-01-21
+    prompt: agents/prompts/REVIEWER.md
+    count: 1
+
+  - role: integrator
+    provider: gemini
+    model: gemini-2.0-flash-thinking-exp-01-21
+    prompt: agents/prompts/INTEGRATOR.md
+    count: 1
+
+docker:
+  image: coding-swarm:latest
+  api_keys:
+    gemini: GEMINI_API_KEY
+  volumes:
+    # Mount SSH keys for git auth
+    "/Users/gabrielfonseca/.ssh": "/root/.ssh"
