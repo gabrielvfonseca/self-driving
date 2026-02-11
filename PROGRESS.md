@@ -7,14 +7,14 @@
 ## Phase 1: Foundation — Project Skeleton
 
 ### Core Infrastructure (Rust)
-- [ ] Initialize `services/rust-core/` crate (Cargo.toml, src/lib.rs)
-- [ ] Define resource data models in Rust (compute, storage, network)
-- [ ] Set up gRPC proto definitions in `packages/proto/`
+- [x] Initialize `services/rust-core/` crate (Cargo.toml, src/lib.rs)
+- [x] Define resource data models in Rust (compute, storage, network)
+- [x] Set up gRPC proto definitions in `packages/proto/`
 
 ### Microservices (Go)
-- [ ] Initialize `services/compute/` — Go service for instance management (go.mod, main.go)
-- [ ] Initialize `services/storage/` — Go service for volume/bucket management
-- [ ] Initialize `services/network/` — Go service for VPC/subnet management
+- [x] Initialize `services/compute/` — Go service for instance management (go.mod, main.go)
+- [x] Initialize `services/storage/` — Go service for volume/bucket management
+- [x] Initialize `services/network/` — Go service for VPC/subnet management
 
 ### AI Planner (Python)
 - [ ] Initialize `services/ai-planner/` — Python service for intelligent resource placement

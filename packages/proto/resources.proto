@@ -1,0 +1,73 @@
+syntax = "proto3";
+
+package resources;
+
+// Resource status enumeration
+enum ResourceStatus {
+  PENDING = 0;
+  CREATING = 1;
+  RUNNING = 2;
+  STOPPING = 3;
+  STOPPED = 4;
+  TERMINATING = 5;
+  TERMINATED = 6;
+  ERROR = 7;
+}
+
+// Compute resource definition
+message ComputeResource {
+  string id = 1;
+  string name = 2;
+  string provider = 3;
+  string region = 4;
+  string instance_type = 5;
+  ResourceStatus status = 6;
+  int64 created_at = 7;
+}
+
+// Storage resource definition
+message StorageResource {
+  string id = 1;
+  string name = 2;
+  string provider = 3;
+  string region = 4;
+  string storage_type = 5;
+  int64 size_gb = 6;
+  ResourceStatus status = 7;
+  int64 created_at = 8;
+}
+
+// Network resource definition
+message NetworkResource {
+  string id = 1;
+  string name = 2;
+  string provider = 3;
+  string region = 4;
+  string network_type = 5;
+  string cidr_block = 6;
+  ResourceStatus status = 7;
+  int64 created_at = 8;
+}
+
+// Resource request
+message ResourceRequest {
+  string resource_type = 1;
+  string provider = 2;
+  string region = 3;
+  map<string, string> attributes = 4;
+}
+
+// Resource response
+message ResourceResponse {
+  string resource_id = 1;
+  ResourceStatus status = 2;
+  string message = 3;
+}
+
+// Resource service definition
+service ResourceService {
+  rpc CreateResource(ResourceRequest) returns (ResourceResponse);
+  rpc GetResource(string) returns (ResourceResponse);
+  rpc UpdateResource(ResourceRequest) returns (ResourceResponse);
+  rpc DeleteResource(string) returns (ResourceResponse);
+}
