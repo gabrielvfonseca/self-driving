@@ -1,1 +1,9 @@
 .swarm/
+
+# Auto-added by swarm agent
+*.egg-info/
+*.pyc
+.pytest_cache/
+.venv/
+__pycache__/
+node_modules/
