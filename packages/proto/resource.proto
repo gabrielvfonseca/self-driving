@@ -1,0 +1,188 @@
+syntax = "proto3";
+
+package infra_engine;
+
+// Resource management service
+service ResourceManager {
+  // Create a new resource
+  rpc CreateResource (CreateResourceRequest) returns (ResourceResponse);
+  
+  // Get a resource by ID
+  rpc GetResource (GetResourceRequest) returns (ResourceResponse);
+  
+  // Update a resource
+  rpc UpdateResource (UpdateResourceRequest) returns (ResourceResponse);
+  
+  // Delete a resource
+  rpc DeleteResource (DeleteResourceRequest) returns (DeleteResourceResponse);
+  
+  // List all resources
+  rpc ListResources (ListResourcesRequest) returns (ListResourcesResponse);
+}
+
+// Create resource request
+message CreateResourceRequest {
+  Resource resource = 1;
+}
+
+// Get resource request
+message GetResourceRequest {
+  string id = 1;
+}
+
+// Update resource request
+message UpdateResourceRequest {
+  Resource resource = 1;
+}
+
+// Delete resource request
+message DeleteResourceRequest {
+  string id = 1;
+}
+
+// Delete resource response
+message DeleteResourceResponse {
+  bool success = 1;
+}
+
+// List resources request
+message ListResourcesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+// List resources response
+message ListResourcesResponse {
+  repeated Resource resources = 1;
+  string next_page_token = 2;
+}
+
+// Resource message
+message Resource {
+  string id = 1;
+  string name = 2;
+  ResourceType resource_type = 3;
+  Provider provider = 4;
+  ResourceStatus status = 5;
+  string created_at = 6;
+  string updated_at = 7;
+  ResourceSpec spec = 8;
+  optional string status_details = 9;
+}
+
+// Resource type
+enum ResourceType {
+  COMPUTE = 0;
+  STORAGE = 1;
+  NETWORK = 2;
+  DATABASE = 3;
+  LOAD_BALANCER = 4;
+  OBJECT_STORAGE = 5;
+}
+
+// Provider
+enum Provider {
+  AWS = 0;
+  GCP = 1;
+  AZURE = 2;
+  ON_PREMISE = 3;
+}
+
+// Resource status
+enum ResourceStatus {
+  PENDING = 0;
+  ACTIVE = 1;
+  UPDATING = 2;
+  DELETING = 3;
+  FAILED = 4;
+  SUSPENDED = 5;
+}
+
+// Resource specification
+message ResourceSpec {
+  CommonSpec common = 1;
+  ProviderSpec provider_spec = 2;
+}
+
+// Common spec
+message CommonSpec {
+  optional string description = 1;
+  map<string, string> tags = 2;
+  map<string, string> labels = 3;
+  string region = 4;
+  optional string zone = 5;
+  optional string availability_zone = 6;
+  optional double cost_estimate = 7;
+  repeated string dependencies = 8;
+}
+
+// Provider spec
+message ProviderSpec {
+  optional AwsSpec aws = 1;
+  optional GcpSpec gcp = 2;
+  optional AzureSpec azure = 3;
+}
+
+// AWS spec
+message AwsSpec {
+  optional string instance_type = 1;
+  optional string ami_id = 2;
+  repeated string security_groups = 3;
+  optional string subnet_id = 4;
+  optional string vpc_id = 5;
+  repeated EbsVolume ebs_volumes = 6;
+  optional string iam_role = 7;
+  optional string auto_scaling_group = 8;
+}
+
+// EBS volume
+message EbsVolume {
+  uint32 size_gb = 1;
+  string volume_type = 2;
+  optional uint32 iops = 3;
+  bool encrypted = 4;
+}
+
+// GCP spec
+message GcpSpec {
+  optional string machine_type = 1;
+  optional string image = 2;
+  optional string network = 3;
+  optional string subnetwork = 4;
+  repeated GcpDisk disks = 5;
+  optional string service_account = 6;
+  optional bool auto_scaling = 7;
+}
+
+// GCP disk
+message GcpDisk {
+  uint32 size_gb = 1;
+  string disk_type = 2;
+  string interface = 3;
+  bool boot = 4;
+}
+
+// Azure spec
+message AzureSpec {
+  optional string vm_size = 1;
+  optional ImageReference image_reference = 2;
+  optional string network_interface = 3;
+  optional string storage_account = 4;
+  optional string availability_set = 5;
+  repeated AzureDisk disks = 6;
+}
+
+// Image reference
+message ImageReference {
+  string publisher = 1;
+  string offer = 2;
+  string sku = 3;
+  string version = 4;
+}
+
+// Azure disk
+message AzureDisk {
+  uint32 size_gb = 1;
+  string disk_type = 2;
+  bool managed = 3;
+}
