@@ -50,12 +50,18 @@ Keep PROGRESS.md structured like this:
 - [ ] Task description — reason for block
 ```
 
-## Code Quality Standards
+## Code Quality & Architecture Standards
 
-When creating skeleton files or project structure:
-- Use Python 3.12+ features
-- Add type hints everywhere
-- Include docstrings with Args/Returns
-- Create `__init__.py` files for all packages
-- Add a `requirements.txt` for dependencies
-- Create a `Makefile` or `pyproject.toml` for common commands
+When creating skeletons or project structure:
+- **Architecture**: Always follow the Polyglot Microservices Monorepo pattern.
+- **Directories**: 
+  - `services/rust-core` (Rust)
+  - `services/compute`, `services/storage` (Go)
+  - `apps/api-gateway` (TypeScript/Node.js)
+  - `services/ai-planner` (Python)
+- **Rust**: Use standard `Cargo.toml` and `src/` layout.
+- **Go**: Use `go.mod` and clean main-package structure.
+- **TypeScript**: Use `package.json` and `src/` layout.
+- **Python**: Use `pyproject.toml` and `src/` layout (Python 3.12+).
+- **Docs**: Include README.md in every service/app directory.
+- **Contracts**: Define internal gRPC/proto contracts in `packages/proto/`.
