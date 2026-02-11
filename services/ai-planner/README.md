@@ -1,27 +1,23 @@
 # AI Planner Service
 
-This service implements the AI agent layer for the infrastructure platform. It handles strategic planning, resource optimization, and decision-making for infrastructure provisioning.
+This service contains the AI agents that plan and orchestrate infrastructure provisioning across multiple cloud providers.
+
+## Architecture
+
+The AI Planner service is organized as follows:
+- `agents/` - AI agent implementations (planning, optimization, etc.)
+- `models/` - Data models and schemas for infrastructure planning
+- `services/` - Service layer for interacting with other system components
+- `tests/` - Unit and integration tests
 
 ## Features
 
 - Strategic planning for infrastructure design
-- Resource placement optimization
-- Cost optimization recommendations
+- Cost optimization algorithms
 - Multi-cloud provider selection
-- Agent orchestration and task management
-
-## Architecture
-
-The AI Planner follows a modular design with:
-- Planning agents for different domains (strategic, cost, security)
-- Model routing for optimal decision-making
-- Memory systems for learning from past decisions
-- Integration with the core infrastructure services
+- Resource allocation planning
+- Agent coordination and orchestration
 
 ## Development
-
-### Prerequisites
-- Python 3.12+
-- Poetry or pip for dependency management
 
 ### Setup
