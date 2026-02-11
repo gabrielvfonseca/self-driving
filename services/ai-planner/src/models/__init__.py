@@ -1,3 +1,3 @@
-"""
-AI Models Package
-"""
+"""Data models for AI Planner."""
+
+__all__ = []

@@ -1,15 +1,20 @@
-"""
-Main entry point for the AI Planner service
-"""
+"""Main entry point for the AI planner service."""
+
 import logging
-from ai_planner.agents.planner_agent import PlannerAgent
+import sys
+import os
+
+# Add the src directory to the path
+sys.path.insert(0, os.path.dirname(__file__))
+
+from agents.planner_agent import PlannerAgent
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 def main():
-    """Main function to start the AI Planner service"""
+    """Main function to start the AI planner service."""
     logger.info("Starting AI Planner service")
     
     # Initialize the planner agent
