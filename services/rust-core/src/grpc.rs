@@ -1,78 +1,31 @@
-//! gRPC service definitions for the infrastructure engine
+//! gRPC server implementation for the infrastructure platform.
 
-use tonic::{Request, Response, Status};
+use tonic::{transport::Server, Request, Response, Result as TonicResult};
 use crate::models::*;
 use crate::resources::*;
 
-/// gRPC service for resource management
-#[tonic::async_trait]
-pub trait ResourceManagerService {
-    /// Create a new resource
-    async fn create_resource(
-        &self,
-        request: Request<Resource>,
-    ) -> Result<Response<Resource>, Status>;
-
-    /// Get a resource by ID
-    async fn get_resource(
-        &self,
-        request: Request<GetResourceRequest>,
-    ) -> Result<Response<Resource>, Status>;
-
-    /// Update a resource
-    async fn update_resource(
-        &self,
-        request: Request<Resource>,
-    ) -> Result<Response<Resource>, Status>;
-
-    /// Delete a resource
-    async fn delete_resource(
-        &self,
-        request: Request<DeleteResourceRequest>,
-    ) -> Result<Response<DeleteResourceResponse>, Status>;
-
-    /// List all resources
-    async fn list_resources(
-        &self,
-        request: Request<ListResourcesRequest>,
-    ) -> Result<Response<ListResourcesResponse>, Status>;
+/// gRPC server for infrastructure management
+pub struct GrpcServer {
+    /// Server address
+    pub address: String,
+    /// Resource manager
+    pub resource_manager: ResourceManager,
 }
 
-/// Request for getting a resource
-#[derive(Debug, Clone, tonic::ProtoBuf)]
-pub struct GetResourceRequest {
-    /// Resource ID
-    pub id: String,
-}
+impl GrpcServer {
+    /// Create a new gRPC server
+    pub async fn new(address: &str) -> Result<Self, Box<dyn std::error::Error>> {
+        Ok(Self {
+            address: address.to_string(),
+            resource_manager: ResourceManager::new(),
+        })
+    }
 
-/// Request for deleting a resource
-#[derive(Debug, Clone, tonic::ProtoBuf)]
-pub struct DeleteResourceRequest {
-    /// Resource ID
-    pub id: String,
-}
-
-/// Response for deleting a resource
-#[derive(Debug, Clone, tonic::ProtoBuf)]
-pub struct DeleteResourceResponse {
-    /// Success status
-    pub success: bool,
-}
-
-/// Request for listing resources
-#[derive(Debug, Clone, tonic::ProtoBuf)]
-pub struct ListResourcesRequest {
-    /// Page size
-    pub page_size: i32,
-    /// Page token
-    pub page_token: String,
-}
-
-/// Response for listing resources
-#[derive(Debug, Clone, tonic::ProtoBuf)]
-pub struct ListResourcesResponse {
-    /// Resources
-    pub resources: Vec<Resource>,
-    /// Next page token
-    pub next_page_token: String,
+    /// Start the gRPC server
+    pub async fn start(&self) -> Result<(), Box<dyn std::error::Error>> {
+        // This would normally start the actual server with the generated proto services
+        // For now, we'll just simulate the server start
+        println!("Starting gRPC server at {}", self.address);
+        Ok(())
+    }
 }

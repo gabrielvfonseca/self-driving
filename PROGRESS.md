@@ -7,9 +7,9 @@
 ## Phase 1: Foundation — Project Skeleton
 
 ### Core Infrastructure (Rust)
-- [ ] Initialize `services/rust-core/` crate (Cargo.toml, src/lib.rs)
-- [ ] Define resource data models in Rust (compute, storage, network)
-- [ ] Set up gRPC proto definitions in `packages/proto/`
+- [x] Initialize `services/rust-core/` crate (Cargo.toml, src/lib.rs)
+- [x] Define resource data models in Rust (compute, storage, network)
+- [x] Set up gRPC proto definitions in `packages/proto/`
 
 ### Microservices (Go)
 - [ ] Initialize `services/compute/` — Go service for instance management (go.mod, main.go)
@@ -24,5 +24,5 @@
 - [ ] Define REST endpoints that proxy to microservices
 
 ### Shared Libraries
-- [ ] Create `packages/common-types/` — Shared TypeScript/JSON Schema types
-- [ ] Create `packages/proto/` — Protocol Buffer definitions for gRPC
+- [x] Create `packages/common-types/` — Shared TypeScript/JSON Schema types
+- [x] Create `packages/proto/` — Protocol Buffer definitions for gRPC

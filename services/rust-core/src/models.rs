@@ -1,33 +1,9 @@
-//! Data models for infrastructure resources
+//! Data models for infrastructure resources.
 
 use serde::{Deserialize, Serialize};
-use uuid::Uuid;
-
-/// Base resource structure
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct Resource {
-    /// Unique identifier for the resource
-    pub id: Uuid,
-    /// Name of the resource
-    pub name: String,
-    /// Type of the resource
-    pub resource_type: ResourceType,
-    /// Provider identifier
-    pub provider: Provider,
-    /// Resource status
-    pub status: ResourceStatus,
-    /// Creation timestamp
-    pub created_at: chrono::DateTime<chrono::Utc>,
-    /// Last updated timestamp
-    pub updated_at: chrono::DateTime<chrono::Utc>,
-    /// Resource specifications
-    pub spec: ResourceSpec,
-    /// Resource status details
-    pub status_details: Option<String>,
-}
 
 /// Resource type enumeration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum ResourceType {
     /// Compute instance
     Compute,
@@ -43,180 +19,96 @@ pub enum ResourceType {
     ObjectStorage,
 }
 
-/// Cloud provider enumeration
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub enum Provider {
-    /// Amazon Web Services
-    Aws,
-    /// Google Cloud Platform
-    Gcp,
-    /// Microsoft Azure
-    Azure,
-    /// On-premise
-    OnPremise,
-}
-
 /// Resource status enumeration
-#[derive(Debug, Clone, Serialize, Deserialize)]
+#[derive(Debug, Clone, Copy, Serialize, Deserialize, PartialEq)]
 pub enum ResourceStatus {
     /// Resource is pending creation
     Pending,
-    /// Resource is active
-    Active,
-    /// Resource is updating
+    /// Resource is ready for use
+    Ready,
+    /// Resource is being updated
     Updating,
-    /// Resource is deleting
+    /// Resource is being deleted
     Deleting,
     /// Resource has failed
     Failed,
-    /// Resource is suspended
-    Suspended,
 }
 
-/// Resource specification
+/// Base resource structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ResourceSpec {
-    /// Common fields for all resources
-    pub common: CommonSpec,
-    /// Provider-specific fields
-    pub provider_spec: ProviderSpec,
+pub struct Resource {
+    /// Unique identifier for the resource
+    pub id: String,
+    /// Name of the resource
+    pub name: String,
+    /// Type of the resource
+    pub resource_type: ResourceType,
+    /// Current status of the resource
+    pub status: ResourceStatus,
+    /// Provider identifier (aws, gcp, azure)
+    pub provider: String,
+    /// Resource metadata
+    pub metadata: ResourceMetadata,
+    /// Creation timestamp
+    pub created_at: i64,
+    /// Last updated timestamp
+    pub updated_at: i64,
 }
 
-/// Common resource specification fields
+/// Resource metadata structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct CommonSpec {
-    /// Resource description
-    pub description: Option<String>,
-    /// Resource tags
-    pub tags: std::collections::HashMap<String, String>,
+pub struct ResourceMetadata {
+    /// Resource specifications
+    pub specs: ResourceSpecs,
     /// Resource labels
     pub labels: std::collections::HashMap<String, String>,
-    /// Resource region
-    pub region: String,
-    /// Resource zone (for zonal resources)
-    pub zone: Option<String>,
-    /// Resource availability zone
+    /// Resource annotations
+    pub annotations: std::collections::HashMap<String, String>,
+}
+
+/// Resource specifications
+#[derive(Debug, Clone, Serialize, Deserialize)]
+pub struct ResourceSpecs {
+    /// CPU cores
+    pub cpu: Option<u32>,
+    /// Memory in GB
+    pub memory_gb: Option<u32>,
+    /// Storage in GB
+    pub storage_gb: Option<u32>,
+    /// Network bandwidth in Mbps
+    pub bandwidth_mbps: Option<u32>,
+    /// Region identifier
+    pub region: Option<String>,
+    /// Availability zone
     pub availability_zone: Option<String>,
-    /// Resource cost estimate
-    pub cost_estimate: Option<f64>,
-    /// Resource dependencies
-    pub dependencies: Vec<Uuid>,
+    /// Additional provider-specific specs
+    pub provider_specs: std::collections::HashMap<String, String>,
 }
 
-/// Provider-specific resource specification
+/// Resource request structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ProviderSpec {
-    /// AWS-specific fields
-    pub aws: Option<AwsSpec>,
-    /// GCP-specific fields
-    pub gcp: Option<GcpSpec>,
-    /// Azure-specific fields
-    pub azure: Option<AzureSpec>,
+pub struct ResourceRequest {
+    /// Name of the resource to create
+    pub name: String,
+    /// Type of resource to create
+    pub resource_type: ResourceType,
+    /// Resource specifications
+    pub specs: ResourceSpecs,
+    /// Provider to use (optional)
+    pub provider: Option<String>,
+    /// Labels to apply
+    pub labels: std::collections::HashMap<String, String>,
+    /// Annotations to apply
+    pub annotations: std::collections::HashMap<String, String>,
 }
 
-/// AWS-specific resource specification
+/// Resource response structure
 #[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AwsSpec {
-    /// Instance type
-    pub instance_type: Option<String>,
-    /// AMI ID
-    pub ami_id: Option<String>,
-    /// Security groups
-    pub security_groups: Vec<String>,
-    /// Subnet ID
-    pub subnet_id: Option<String>,
-    /// VPC ID
-    pub vpc_id: Option<String>,
-    /// EBS volume specifications
-    pub ebs_volumes: Vec<EbsVolume>,
-    /// IAM role
-    pub iam_role: Option<String>,
-    /// Auto scaling group
-    pub auto_scaling_group: Option<String>,
-}
-
-/// EBS volume specification
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct EbsVolume {
-    /// Volume size in GB
-    pub size_gb: u32,
-    /// Volume type
-    pub volume_type: String,
-    /// IOPS (for io1 volumes)
-    pub iops: Option<u32>,
-    /// Encrypted
-    pub encrypted: bool,
-}
-
-/// GCP-specific resource specification
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GcpSpec {
-    /// Machine type
-    pub machine_type: Option<String>,
-    /// Image name
-    pub image: Option<String>,
-    /// Network
-    pub network: Option<String>,
-    /// Subnetwork
-    pub subnetwork: Option<String>,
-    /// Disks
-    pub disks: Vec<GcpDisk>,
-    /// Service account
-    pub service_account: Option<String>,
-    /// Auto scaling
-    pub auto_scaling: Option<bool>,
-}
-
-/// GCP disk specification
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct GcpDisk {
-    /// Disk size in GB
-    pub size_gb: u32,
-    /// Disk type
-    pub disk_type: String,
-    /// Interface
-    pub interface: String,
-    /// Boot disk
-    pub boot: bool,
-}
-
-/// Azure-specific resource specification
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AzureSpec {
-    /// VM size
-    pub vm_size: Option<String>,
-    /// Image reference
-    pub image_reference: Option<ImageReference>,
-    /// Network interface
-    pub network_interface: Option<String>,
-    /// Storage account
-    pub storage_account: Option<String>,
-    /// Availability set
-    pub availability_set: Option<String>,
-    /// Disks
-    pub disks: Vec<AzureDisk>,
-}
-
-/// Image reference for Azure
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct ImageReference {
-    /// Publisher
-    pub publisher: String,
-    /// Offer
-    pub offer: String,
-    /// SKU
-    pub sku: String,
-    /// Version
-    pub version: String,
-}
-
-/// Azure disk specification
-#[derive(Debug, Clone, Serialize, Deserialize)]
-pub struct AzureDisk {
-    /// Disk size in GB
-    pub size_gb: u32,
-    /// Disk type
-    pub disk_type: String,
-    /// Managed disk
-    pub managed: bool,
+pub struct ResourceResponse {
+    /// Created resource
+    pub resource: Resource,
+    /// Operation status
+    pub status: ResourceStatus,
+    /// Error message if operation failed
+    pub error: Option<String>,
 }
